@@ -1,0 +1,36 @@
+.contact-container {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  margin: auto;
+  gap: 12px;
+}
+
+.contact-input,
+.contact-textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.contact-textarea {
+  height: 100px;
+}
+
+.contact-button {
+  padding: 10px;
+  background-color: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.contact-button:hover {
+  background-color: #333;
+}

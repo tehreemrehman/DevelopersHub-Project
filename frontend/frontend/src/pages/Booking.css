@@ -1,0 +1,31 @@
+.booking-container {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  margin: auto;
+  gap: 12px;
+}
+
+.booking-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.booking-button {
+  padding: 10px;
+  background-color: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.booking-button:hover {
+  background-color: #333;
+}
