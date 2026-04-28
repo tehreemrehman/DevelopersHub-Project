@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./Booking.css";
 
 function Booking() {
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     name: "",
     email: "",
     date: "",
@@ -10,86 +10,38 @@ function Booking() {
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
 
-    try {
-      await fetch("http://localhost:5000/api/bookings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-      });
+    await fetch("http://localhost:5000/api/bookings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(form)
+    });
 
-      alert("Booking successful ✅");
-
-      setFormData({
-        name: "",
-        email: "",
-        date: "",
-        time: ""
-      });
-
-    } catch (error) {
-      console.log(error);
-      alert("Error booking ❌");
-    }
+    alert("Booking successful ✅");
   };
 
   return (
     <div className="booking-container">
-      <h1>Book a Meeting</h1>
+      <div className="booking-box">
+        <h2>Book Appointment</h2>
 
-      <form onSubmit={handleSubmit} className="booking-form">
-        <input
-          type="text"
-          name="name"
-          placeholder="Your Name"
-          value={formData.name}
-          onChange={handleChange}
-          className="booking-input"
-          required
-        />
+        <form onSubmit={submitForm}>
+          <input name="name" placeholder="Your Name" onChange={handleChange} />
+          <input name="email" placeholder="Your Email" onChange={handleChange} />
+          
+          <input type="date" name="date" onChange={handleChange} />
+          <input type="time" name="time" onChange={handleChange} />
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Your Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="booking-input"
-          required
-        />
-
-        <input
-          type="date"
-          name="date"
-          value={formData.date}
-          onChange={handleChange}
-          className="booking-input"
-          required
-        />
-
-        <input
-          type="time"
-          name="time"
-          value={formData.time}
-          onChange={handleChange}
-          className="booking-input"
-          required
-        />
-
-        <button type="submit" className="booking-button">
-          Book Now
-        </button>
-      </form>
+          <button type="submit">Book Now</button>
+        </form>
+      </div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./AdminLogin.css";
 
 function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -27,25 +28,26 @@ function AdminLogin() {
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "100px" }}>
-      <h2>Admin Login</h2>
+    <div className="login-container">
+      <div className="login-box">
+        <h2>Admin Login</h2>
 
-      <form onSubmit={login}>
-        <input
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <br /><br />
+        <form onSubmit={login}>
+          <input
+            type="email"
+            placeholder="Enter Email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <br /><br />
+          <input
+            type="password"
+            placeholder="Enter Password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        <button type="submit">Login</button>
-      </form>
+          <button type="submit">Login</button>
+        </form>
+      </div>
     </div>
   );
 }

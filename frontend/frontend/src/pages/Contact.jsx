@@ -2,83 +2,85 @@ import { useState } from "react";
 import "./Contact.css";
 
 function Contact() {
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     name: "",
     email: "",
     message: ""
   });
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await fetch("http://localhost:5000/api/contacts", {
+      const res = await fetch("http://localhost:5000/api/contacts", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form)
       });
 
-      alert("Message sent successfully ✅");
+      const data = await res.json();
 
-      setFormData({
-        name: "",
-        email: "",
-        message: ""
-      });
+      if (res.ok) {
+        alert("Message sent successfully 🚀");
+
+        // form reset
+        setForm({ name: "", email: "", message: "" });
+      } else {
+        alert(data.message || "Error sending message");
+      }
 
     } catch (error) {
+      alert("Server error");
       console.log(error);
-      alert("Error sending message ❌");
     }
   };
 
   return (
-    <div className="contact-container">
-      <h1>Contact Us</h1>
+    <div className="contact-page">
 
-      <form onSubmit={handleSubmit} className="contact-form">
+      {/* LEFT SIDE INFO */}
+      <div className="contact-info">
+
+        <h1>Get In Touch</h1>
+        <p>We are here to help you build your dream project 🚀</p>
+
+        <div className="info-box">
+          <p>📍 Location: Pakistan</p>
+          <p>📧 Email: info@agencypro.com</p>
+          <p>📞 Phone: +92 300 1234567</p>
+        </div>
+
+      </div>
+
+      {/* RIGHT SIDE FORM */}
+      <form className="contact-form" onSubmit={handleSubmit}>
+
+        <h2>Send Message</h2>
+
         <input
           type="text"
-          name="name"
           placeholder="Your Name"
-          value={formData.name}
-          onChange={handleChange}
-          className="contact-input"
-          required
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
         />
 
         <input
           type="email"
-          name="email"
           placeholder="Your Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="contact-input"
-          required
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
         />
 
         <textarea
-          name="message"
           placeholder="Your Message"
-          value={formData.message}
-          onChange={handleChange}
-          className="contact-textarea"
-          required
+          value={form.message}
+          onChange={(e) => setForm({ ...form, message: e.target.value })}
         />
 
-        <button type="submit" className="contact-button">
-          Send Message
-        </button>
+        <button type="submit">Send Message</button>
+
       </form>
+
     </div>
   );
 }

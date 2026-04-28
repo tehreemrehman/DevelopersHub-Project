@@ -1,114 +1,83 @@
 import { useEffect, useState } from "react";
+import "./AdminDashboard.css";
 
 function AdminDashboard() {
-
-  // 🔐 Protect route
   const token = localStorage.getItem("token");
-  if (!token) {
-    window.location.href = "/admin-login";
-  }
 
   const [contacts, setContacts] = useState([]);
   const [bookings, setBookings] = useState([]);
 
-  // 🟢 DELETE CONTACT FUNCTION (IMPORTANT)
-  const deleteContact = async (id) => {
-    try {
-      await fetch(`http://localhost:5000/api/contacts/${id}`, {
-        method: "DELETE"
-      });
-
-      // update UI
-      setContacts(contacts.filter(c => c._id !== id));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-   // 🟢 DELETE BOOKING FUNCTION (IMPORTANT)
-  const deleteBooking = async (id) => {
-    try {
-      await fetch(`http://localhost:5000/api/bookings/${id}`, {
-        method: "DELETE"
-      });
-
-      // update UI
-      setBookings(bookings.filter(b => b._id !== id));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // 🟢 FETCH DATA
   useEffect(() => {
-    fetch("http://localhost:5000/api/contacts")
-      .then(res => res.json())
-      .then(data => setContacts(data))
-      .catch(err => console.log(err));
+    if (!token) {
+      window.location.href = "/admin-login";
+    }
+  }, [token]);
 
-    fetch("http://localhost:5000/api/bookings")
+  useEffect(() => {
+    fetch("http://localhost:5000/api/contacts", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => res.json())
-      .then(data => setBookings(data))
-      .catch(err => console.log(err));
-  }, []);
+      .then(data => setContacts(data));
+
+    fetch("http://localhost:5000/api/bookings", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => setBookings(data));
+  }, [token]);
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/admin-login";
+  };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="admin-container">
       
-      <h1>Admin Dashboard</h1>
+      <div className="admin-header">
+        <h1>🚀 Admin Dashboard</h1>
+        <button className="logout-btn" onClick={logout}>
+          Logout
+        </button>
+      </div>
+      
+      <div className="stats">
+        <div className="stat-card">📩 Contacts <span>{contacts.length}</span></div>
+        <div className="stat-card">📅 Bookings <span>{bookings.length}</span></div>
+      </div>
+      <div className="section">
+        <h2>📩 Contacts</h2>
 
-      {/* 🔓 LOGOUT */}
-      <button onClick={() => {
-        localStorage.removeItem("token");
-        window.location.href = "/admin-login";
-      }}>
-        Logout
-      </button>
+        {contacts.length === 0 ? (
+          <p className="empty">No contacts found</p>
+        ) : (
+          contacts.map((c) => (
+            <div className="card" key={c._id}>
+              <h3>{c.name}</h3>
+              <p>📧 {c.email}</p>
+              <p>💬 {c.message}</p>
+            </div>
+          ))
+        )}
+      </div>
 
-      {/* 🟢 CONTACTS */}
-      <h2>Contacts</h2>
-      {contacts.length === 0 ? (
-        <p>No contacts</p>
-      ) : (
-        contacts.map((c) => (
-          <div
-            key={c._id}
-            style={{ border: "1px solid black", margin: "10px", padding: "10px" }}
-          >
-            <p><b>Name:</b> {c.name}</p>
-            <p><b>Email:</b> {c.email}</p>
-            <p><b>Message:</b> {c.message}</p>
+      <div className="section">
+        <h2>📅 Bookings</h2>
 
-            {/* DELETE BUTTON */}
-            <button onClick={() => deleteContact(c._id)}>
-              Delete
-            </button>
-          </div>
-        ))
-      )}
+        {bookings.length === 0 ? (
+          <p className="empty">No bookings found</p>
+        ) : (
+          bookings.map((b) => (
+            <div className="card" key={b._id}>
+              <h3>{b.name}</h3>
+              <p>📧 {b.email}</p>
+              <p>⏰ {b.date} | {b.time}</p>
+            </div>
+          ))
+        )}
+      </div>
 
-      {/* 🟢 BOOKINGS */}
-      <h2>Bookings</h2>
-      {bookings.length === 0 ? (
-        <p>No bookings</p>
-      ) : (
-        bookings.map((b) => (
-          <div
-            key={b._id}
-            style={{ border: "1px solid blue", margin: "10px", padding: "10px" }}
-          >
-            <p><b>Name:</b> {b.name}</p>
-            <p><b>Email:</b> {b.email}</p>
-            <p><b>Date:</b> {b.date}</p>
-            <p><b>Time:</b> {b.time}</p>
-
-             {/* DELETE BUTTON */}
-            <button onClick={() => deleteBooking(b._id)}>
-              Delete
-            </button>
-          </div>
-        ))
-      )}
     </div>
   );
 }
